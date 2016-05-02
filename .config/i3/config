@@ -9,11 +9,13 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod1
+set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:DejaVu Sans Mono 10
+#font pango:DejaVu Sans Mono 10
+font pango:Source Code Pro 10
+
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -31,7 +33,7 @@ font pango:DejaVu Sans Mono 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec lxterminal
+bindsym $mod+Return exec termite
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -39,7 +41,7 @@ bindsym $mod+Shift+q kill
 # start dmenu (a program launcher)
 #bindsym $mod+d exec dmenu_run
 
-bindsym $mod+d exec "rofi -show run -fg green -bg black"
+bindsym $mod+d exec "rofi -show run"
 
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
@@ -47,16 +49,31 @@ bindsym $mod+d exec "rofi -show run -fg green -bg black"
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
-# imgur-screenshot.sh on printscreen
+# Use maim to take a screenshot on printscreen but don't automatically upload
+bindsym Print exec "maim -s /home/carkasjak/Pictures/screenshots/notuploaded-$(date +%F-%H%M%S).jpg"
+# Use maim with imgur-screenshot to automatically upload on control+printscreen
 bindsym Control+Print exec imgur-screenshot
+bindsym Shift+Print exec "maim -i $(xdotool getactivewindow) /home/carkasjak/Pictures/screenshots/notuploaded-$(date +%F-%H%M%S).jpg"
 
-# Workspace 4 is floating!
+
+# Workspace 3 and 4 are floating!
+for_window [workspace=$workspace3] floating enable
 for_window [workspace=$workspace4] floating enable
 
+# Toggle border mode with mod+o
+bindsym $mod+o border toggle
+
 # Alt+Tab for rofi window switching mode
-bindsym $mod+Tab exec "rofi -show window -fg green -bg black"
+bindsym $mod+Tab exec "rofi -show window"
 #bindsym $mod+Tab workspace next
 #bindsym $mod+Shift+Tab workspace prev
+
+# Make the currently focused window a scratchpad
+bindsym $mod+Shift+bar move scratchpad
+
+# Show the first scratchpad window
+bindsym $mod+bar scratchpad show
+
 
 # change focus
 bindsym $mod+j focus left
@@ -112,20 +129,20 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 set $workspace1 "1: Main"
-set $workspace2 "2: Right Monitor"
-set $workspace3 "3: IRC"
-set $workspace4 "4: Floating"
-set $workspace5 "5: Five"
-set $workspace6 "6: Torrents"
-set $workspace7 "7: Seven"
-set $workspace8 "8: Eight"
-set $workspace9 "9: Nine"
-set $workspace10 "10: Ten"
+set $workspace2 "2: IRC T"
+set $workspace3 "3: Game F"
+set $workspace4 "4: Misc Floating F"
+set $workspace5 "5: Misc Tiling T"
+set $workspace6 "6: Torrents T"
+set $workspace7 "7: Seven T"
+set $workspace8 "8: Eight T"
+set $workspace9 "9: Nine T"
+set $workspace10 "10: Ten T"
 
-assign [class="Hexchat"] $workspace3
-assign [class="Firefox"] $workspace2
-assign [class="qBittorrent"] $workspace6
-assign [class="Steam"] $workspace4
+#assign [class="Hexchat"] $workspace3
+#assign [class="Firefox"] $workspace2
+#assign [class="qBittorrent"] $workspace6
+assign [class="Steam"] $workspace3
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -188,10 +205,24 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+mode "moveit" {
+	bindsym Up move up 1px
+	bindsym Left move left 1px
+	bindsym Down move down 1px
+	bindsym Right move right 1px
+	    
+	# back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
 
-# Border size
-new_window normal 3
-new_float normal 3
+
+bindsym $mod+m focus floating; mode "moveit"
+
+
+# Border size and style (replace pixel with normal to get status bars)
+new_window pixel 5
+new_float normal 5
 
 
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -202,7 +233,7 @@ bar {
 
 		#class                 border  backgr  text
 		colors { 
-			focused_workspace  #000000 #AFD700 #066900
+			focused_workspace  #000000 #05f4fc #000000
 			inactive_workspace #333333 #000000 #AAAAAA
 			active_workspace   #333333 #000000 #FFFFFF
 			urgent_workspace   #333333 #066900 #AFD700
@@ -213,9 +244,9 @@ bar {
 bindsym $mod+Shift+b bar mode toggle
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Media player controls
 #bindsym XF86AudioPlay exec playerctl play
@@ -231,18 +262,29 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute s
 #client.unfocused          #4c7899 #24364F #aaaaaa #2e9ef4
 #client.focused          #c10101 #880404 #ffffff #00AA00
 
-#class                  border  backgr  text    indicator
-client.focused          #111111 #AFD700 #066900 #AFD700
-client.focused_inactive #111111 #444444 #ffffff #484e50
-client.unfocused        #111111 #222222 #888888 #292d2e
-client.urgent           #2f343a #900000 #ffffff #900000
 
+#Light blue
+#class                  border  backgr  text    indicator
+
+client.focused          #05f4fc #05f4fc #000000 #05f4fc
+#client.focused_inactive #111111 #444444 #ffffff #484e50
+#client.unfocused        #111111 #222222 #888888 #292d2e
+#client.urgent           #2f343a #900000 #ffffff #900000
+
+
+# old colors (green borders)
+#class                  border  backgr  text    indicator
+#client.focused          #111111 #AFD700 #066900 #AFD700
+#client.focused_inactive #111111 #444444 #ffffff #484e50
+#client.unfocused        #111111 #222222 #888888 #292d2e
+#client.urgent           #2f343a #900000 #ffffff #900000
 
 # Autostart apps
 
 exec --no-startup-id nm-applet
 exec --no-startup-id xscreensaver
-exec --no-startup-id kodi-prevent-xscreensaver
-exec --no-startup-id "feh --bg-fill /home/carkasjak/Pictures/wallpapers/black-simple-arch-wp.jpg"
+#exec --no-startup-id kodi-prevent-xscreensaver.sh
+#exec --no-startup-id "feh --bg-fill /home/carkasjak/Pictures/wallpapers/black-simple-arch-wp.jpg"
+exec --no-startup-id "feh --bg-fill /home/carkasjak/Pictures/wallpapers/factorio-wallpaper-2-2560x1440.jpg"
 exec --no-startup-id dunst
 
