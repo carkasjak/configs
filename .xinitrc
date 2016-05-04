@@ -1,6 +1,9 @@
 # Set the keyboard layout
 setxkbmap no
 
+# Load Xresources
+[[ -f ~/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+
 # Disable mouse acceleration
 xset m 0 0
 
