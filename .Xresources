@@ -1,0 +1,20 @@
+! ------------------------------------------------------------------------------
+! ROFI Color theme
+! ------------------------------------------------------------------------------
+rofi.color-enabled: true
+rofi.color-window: #393939, #393939, #268bd2
+rofi.color-normal: #393939, #ffffff, #393939, #268bd2, #ffffff
+rofi.color-active: #393939, #268bd2, #393939, #268bd2, #205171
+rofi.color-urgent: #393939, #f3843d, #393939, #268bd2, #ffc39c
+
+URxvt*termName:  screen-256color
+URxvt*scrollBar:  false
+URxvt*background:  Black
+URxvt*foreground:  White
+URxvt*Font:  xft:Source Code Pro:size=11
+URxvt*boldFont:  xft:Source Code Pro:bold:size=11
+URxvt*italicFont:  xft:Source Code Pro:italic:size=11
+URxvt*boldItalicFont:  xft:Source Code Pro:bold:italic:size=11
+URxvt.perl-ext-common: default,matcher
+URxvt.url-launcher: /usr/bin/chromium
+URxvt.matcher.button: 1
